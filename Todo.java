@@ -58,34 +58,19 @@ public class Todo {
 		return intro;
 	}
 	public static boolean checkRedundancy ( String newTask) throws IOException {
-		File file = new File("todo.txt");
-
-		boolean flag = false;
-		try {
-			Scanner scanner = new Scanner(file);
-
-			//now read the file line by line...
-			while (scanner.hasNextLine()) {
-				String line = scanner.nextLine();
-
-				if(line == newTask) {
-					flag = true;
-				}
-			}
-		} catch(FileNotFoundException e) {
-			//handle this
-		}
-		return flag;
+		ArrayList<String> taskArray = fileToList("todo.txt");
+		return taskArray.contains(newTask);
 	}
 
 	public static void addTask(String newTask) throws IOException {
 
-		BufferedWriter writer = new BufferedWriter(
-				new OutputStreamWriter(new FileOutputStream("todo.txt", true)
-						,StandardCharsets.UTF_8));
+			BufferedWriter writer = new BufferedWriter(
+					new OutputStreamWriter(new FileOutputStream("todo.txt", true)
+							,StandardCharsets.UTF_8));
 
-		writer.write(newTask+"\n");
-		writer.close();
+			writer.write(newTask+"\n");
+			writer.close();
+
 	}
 
 	public static void addDoneTask( String newTask) throws IOException {
@@ -122,7 +107,7 @@ public class Todo {
 	public static void completeTask(int number) throws IOException {
 		ArrayList<String> taskArray = fileToList("todo.txt");
 		int totalLines = countLines("todo.txt");
-		if(number <= totalLines && number != 0){
+		if(!(number > totalLines || number == 0)){
 			emptyFile("todo.txt");
 			for (int i = 0; i < taskArray.size(); i++){
 				if(i == number-1) addDoneTask(taskArray.get(i));
@@ -143,6 +128,8 @@ public class Todo {
 
 
 	public static void main(String args[]) throws IOException {
+//		emptyFile("todo.txt");
+//		emptyFile("done.txt");
 		if(args.length == 0 || "help".equals(args[0])) {
 			System.out.println(displayIntro());
 		}
